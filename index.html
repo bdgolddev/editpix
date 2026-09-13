@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EditPix — Photo Editor</title>
+  <link rel="icon" type="image/ico" sizes="32x32" href="img/fabicon.ico">
+  <link rel="apple-touch-icon" href="img/fabicon.ico">
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">
+        <img src="img/logo.png" alt="EditPix Logo">
+      </div>
+
+      <div>
+        <div class="brand-title">EditPix <span class="version">v1.0.0</span></div>
+        <div class="brand-sub">Lightweight Batch Photo Editor</div>
+      </div>
+    </div>
+
+    <div id="counter" class="counter">0 images</div>
+  </header>
+
+  <div class="app">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-top">
+
+        <label class="upload" id="uploadLabel">
+          ＋ Upload Multiple
+          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        </label>
+
+        <div class="action-row">
+          <button class="btn blue" id="copyBtn">Copy Edit</button>
+          <button class="btn green" id="applyBtn">Apply All</button>
+        </div>
+
+        <div class="action-row">
+          <button class="btn" id="resetBtn">Reset</button>
+          <button class="btn red" id="clearBtn">Clear</button>
+        </div>
+
+      </div>
+
+      <div class="section">Photos</div>
+
+      <div class="thumbs" id="thumbs">
+        <div class="empty-list">Upload photos to begin</div>
+      </div>
+
+    </aside>
+
+    <main class="workspace">
+
+      <div class="viewer">
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">◇</div>
+        <div class="empty-title">No photo selected</div>
+        <div class="empty-sub">Upload multiple photos to start</div>
+      </div>
+
+      <div class="crop-stage" id="cropStage">
+
+        <img id="cropImage" class="crop-image">
+
+        <div class="crop-box" id="cropBox">
+
+          <div class="crop-grid"></div>
+
+          <div class="handle h-nw" data-h="nw"></div>
+          <div class="handle h-n" data-h="n"></div>
+          <div class="handle h-ne" data-h="ne"></div>
+          <div class="handle h-e" data-h="e"></div>
+          <div class="handle h-se" data-h="se"></div>
+          <div class="handle h-s" data-h="s"></div>
+          <div class="handle h-sw" data-h="sw"></div>
+          <div class="handle h-w" data-h="w"></div>
+
+        </div>
+
+        <div class="crop-toolbar">
+
+          <button id="zoomOut">−</button>
+          <span class="zoom-label" id="zoomLabel">100%</span>
+          <button id="zoomIn">＋</button>
+          <button id="fitCrop">Fit</button>
+
+          <span class="crop-info">
+            Wheel = Zoom • Drag = Move
+          </span>
+
+          <button id="cancelCrop">Close</button>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <aside class="rightbar">
+
+      <div class="panel-head">
+        <div class="panel-title">Edit Photo</div>
+        <div class="panel-sub">Adjustments & transformation</div>
+      </div>
+
+      <div class="controls">
+
+        <div class="group">
+
+          <div class="group-title">Transform</div>
+
+          <div class="tool-grid">
+
+            <button class="tool" id="rotateLeft">↶ Rotate Left</button>
+            <button class="tool" id="rotateRight">↷ Rotate Right</button>
+            <button class="tool" id="flipH">↔ Flip H</button>
+            <button class="tool" id="flipV">↕ Flip V</button>
+
+          </div>
+
+          <div class="degree">
+
+            <input id="degreeInput" type="number" min="-360" max="360" step=".1" value="0" placeholder="Custom degree">
+
+            <button class="tool" id="applyDegree">Apply</button>
+
+          </div>
+
+          <input class="range" id="degreeRange" type="range" min="-180" max="180" value="0" style="margin-top:9px">
+
+        </div>
+
+        <div class="group">
+
+          <div class="group-title">Crop</div>
+
+          <div class="crop-ratios">
+
+            <button class="ratio active" data-ratio="free">Free</button>
+            <button class="ratio" data-ratio="1">1:1</button>
+            <button class="ratio" data-ratio="1.333333">4:3</button>
+            <button class="ratio" data-ratio=".75">3:4</button>
+            <button class="ratio" data-ratio="1.777777">16:9</button>
+            <button class="ratio" data-ratio=".5625">9:16</button>
+
+          </div>
+
+          <button class="tool" style="width:100%" id="startCrop">
+            ✂ Open Crop
+          </button>
+
+        </div>
+
+        <div class="group">
+
+          <div class="group-title">Adjustments</div>
+
+          <div id="sliders"></div>
+
+        </div>
+
+      </div>
+
+      <div class="save-area">
+
+        <button class="save" id="saveBtn" disabled>
+          Replace
+        </button>
+
+        <button class="btn save-all" id="saveAllBtn" disabled>
+          Replace All
+        </button>
+
+        <div class="progress" id="progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="status" id="status">Ready</div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+  <footer>
+    © <span id="year"></span>
+    Concept &amp; Developed by
+    <a href="https://anik-kumaar-datta.web.app/" target="_blank" rel="noopener noreferrer">
+      Anik Kumaar Datta
+    </a>
+  </footer>
+
+
+
+  <!-- Main JavaScript -->
+  <script src="script.js"></script>
+</body>
+
+</html>
